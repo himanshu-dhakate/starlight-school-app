@@ -4,6 +4,7 @@ import com.eazybytes.example18.model.Holiday;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
@@ -13,12 +14,18 @@ import java.util.stream.Collectors;
 @Controller
 public class HolidayController {
 
-    @GetMapping("/holidays")
-    public String displayHolidays(@RequestParam(required = false, name = "festival") boolean showFest,
-                                  @RequestParam(required = false, name = "federal") boolean showFed, Model model) {
+    @GetMapping("/holidays/{display}")
+    public String displayHolidays(Model model, @PathVariable(name = "display") String show) {
 
-        model.addAttribute("showFest", showFest);
-        model.addAttribute("showFed", showFed);
+        if (show != null && show.equals("all")) {
+            model.addAttribute("showFed", true);
+            model.addAttribute("showFest", true);
+        } else if (show != null && show.equals("festival")) {
+            model.addAttribute("showFest", true);
+        } else if (show != null && show.equals("federal")) {
+            model.addAttribute("showFed", true);
+        }
+
         List<Holiday> holidays = Arrays.asList(
                 new Holiday(" Jan 1 ","New Year's Day", Holiday.Type.FESTIVAL),
                 new Holiday(" Oct 31 ","Halloween", Holiday.Type.FESTIVAL),
